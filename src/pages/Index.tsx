@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { toast } from '@/components/ui/sonner';
 import Header from '@/components/Header';
@@ -7,6 +6,7 @@ import MetadataPreview from '@/components/MetadataPreview';
 import FormatSelector from '@/components/FormatSelector';
 import DownloadButton from '@/components/DownloadButton';
 import { Card, CardContent } from "@/components/ui/card";
+import api from '@/services/api';
 
 interface PlaylistEntry {
   id: string;
@@ -38,20 +38,7 @@ const Index = () => {
     setMetadata(null);
     
     try {
-      // Replace with actual backend URL in production
-      const apiUrl = `http://${window.location.hostname}:5000/info`;
-      const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: url.trim() })
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(errorText || response.statusText);
-      }
-
-      const data = await response.json();
+      const data = await api.fetchMetadata(url);
       setMetadata(data);
 
       // For playlists, select all items by default
@@ -100,19 +87,17 @@ const Index = () => {
     
     try {
       // Build request body based on metadata type
-      let requestBody;
+      let requestItems;
       
       if (metadata.type === 'video') {
-        requestBody = {
-          items: [{ 
-            id: url, 
-            url: url, 
-            format: selectedFormat 
-          }]
-        };
+        requestItems = [{ 
+          id: url, 
+          url: url, 
+          format: selectedFormat 
+        }];
       } else if (metadata.type === 'playlist' && metadata.entries) {
         // Only include selected items
-        const items = metadata.entries
+        requestItems = metadata.entries
           .filter(entry => selectedItems.includes(entry.id))
           .map(entry => ({
             id: entry.id,
@@ -120,42 +105,17 @@ const Index = () => {
             format: selectedFormat
           }));
 
-        if (items.length === 0) {
+        if (requestItems.length === 0) {
           throw new Error('No items selected for download');
         }
-        
-        requestBody = { items };
       } else {
         throw new Error('Invalid metadata');
       }
       
       // Send download request to API
-      const apiUrl = `http://${window.location.hostname}:5000/download`;
-      const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestBody)
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(errorText || response.statusText);
-      }
-
-      // Extract filename from Content-Disposition header
-      const dispo = response.headers.get('Content-Disposition') || '';
-      let filename;
+      const { blob, filename } = await api.downloadMedia(requestItems);
       
-      const rfc5987 = dispo.match(/filename\*\=UTF-8''([^;]+)/);
-      if (rfc5987) {
-        filename = decodeURIComponent(rfc5987[1]);
-      } else {
-        const regular = dispo.match(/filename=\"?([^\";]+)\"?/);
-        filename = regular ? regular[1] : `download.${metadata.type === 'playlist' ? 'zip' : selectedFormat}`;
-      }
-
       // Create download
-      const blob = await response.blob();
       const blobUrl = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = blobUrl;
