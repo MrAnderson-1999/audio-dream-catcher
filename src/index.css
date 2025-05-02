@@ -113,4 +113,16 @@
     animation-delay: -0.45s;
     @apply h-2;
   }
+  
+  /* Responsive utilities */
+  @media (max-width: 640px) {
+    .container {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+    
+    .audio-wave {
+      transform: scale(0.8);
+    }
+  }
 }

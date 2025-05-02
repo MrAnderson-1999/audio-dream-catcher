@@ -3,6 +3,7 @@ import React from 'react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface UrlInputProps {
   url: string;
@@ -12,6 +13,8 @@ interface UrlInputProps {
 }
 
 const UrlInput: React.FC<UrlInputProps> = ({ url, setUrl, onFetch, isLoading }) => {
+  const isMobile = useIsMobile();
+  
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       onFetch();
@@ -20,7 +23,7 @@ const UrlInput: React.FC<UrlInputProps> = ({ url, setUrl, onFetch, isLoading }) 
 
   return (
     <div className="relative w-full mb-6">
-      <div className="flex gap-2">
+      <div className={`flex ${isMobile ? 'flex-col' : 'flex-row'} gap-2`}>
         <div className="relative flex-1">
           <Input
             type="text"
@@ -35,7 +38,7 @@ const UrlInput: React.FC<UrlInputProps> = ({ url, setUrl, onFetch, isLoading }) 
         <Button 
           onClick={onFetch}
           disabled={isLoading || !url.trim()} 
-          className="bg-purple-600 hover:bg-purple-700 text-white px-5 py-6 rounded-lg transition-colors"
+          className={`bg-purple-600 hover:bg-purple-700 text-white px-5 py-6 rounded-lg transition-colors ${isMobile ? 'w-full' : ''}`}
         >
           <Download className="mr-2 h-4 w-4" />
           Download

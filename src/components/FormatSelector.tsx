@@ -3,6 +3,7 @@ import React from 'react';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { cn } from '@/lib/utils';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface FormatSelectorProps {
   formats: string[];
@@ -17,6 +18,7 @@ const FormatSelector: React.FC<FormatSelectorProps> = ({
   onChange,
   disabled = false
 }) => {
+  const isMobile = useIsMobile();
   const availableFormats = formats.length > 0 ? formats : ['mp3', 'wav', 'flac'];
 
   return (
@@ -25,11 +27,11 @@ const FormatSelector: React.FC<FormatSelectorProps> = ({
       <RadioGroup
         value={selectedFormat}
         onValueChange={onChange}
-        className="flex gap-3"
+        className={`flex ${isMobile ? 'flex-wrap' : ''} gap-3`}
         disabled={disabled}
       >
         {availableFormats.map((format) => (
-          <div key={format} className="flex items-center space-x-2">
+          <div key={format} className={`flex items-center space-x-2 ${isMobile ? 'w-full sm:w-auto' : ''}`}>
             <RadioGroupItem 
               value={format} 
               id={`format-${format}`}
@@ -42,7 +44,7 @@ const FormatSelector: React.FC<FormatSelectorProps> = ({
               className={cn(
                 "flex flex-col items-center justify-between rounded-md border-2 border-muted bg-secondary p-4 hover:bg-muted hover:text-accent-foreground",
                 "peer-data-[state=checked]:border-purple-500 peer-data-[state=checked]:bg-secondary",
-                "cursor-pointer transition-all",
+                "cursor-pointer transition-all w-full",
                 disabled && "opacity-50 cursor-not-allowed"
               )}
             >

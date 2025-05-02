@@ -59,7 +59,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-wave-pattern pb-10">
-      <div className="container max-w-3xl px-4 sm:px-6">
+      <div className="container max-w-3xl px-4 sm:px-6 mx-auto">
         <Header />
         
         <Card className="border border-border backdrop-blur-sm bg-card/80 mb-6">
