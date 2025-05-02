@@ -62,7 +62,9 @@ export const downloadMedia = async (items: DownloadItem[]): Promise<{ blob: Blob
     
     // Prepare request body based on number of items
     let requestBody;
-    let endpoint = '/api/download';
+    
+    // Direct to /download endpoint as configured in nginx
+    const endpoint = '/download';
     
     if (items.length === 1) {
       // For single items, use a simpler format
@@ -71,6 +73,8 @@ export const downloadMedia = async (items: DownloadItem[]): Promise<{ blob: Blob
       // For multiple items, use the items array format
       requestBody = { items };
     }
+    
+    console.log(`Sending POST request to ${endpoint} with body:`, requestBody);
     
     const response = await fetch(endpoint, {
       method: 'POST',
