@@ -28,7 +28,8 @@ interface VideoMetadata {
  * Fetch metadata for a YouTube URL (video or playlist)
  */
 export const fetchMetadata = async (url: string): Promise<VideoMetadata> => {
-  const response = await fetch('/api/info', {
+  // Use direct endpoint without /api prefix to match original code
+  const response = await fetch('/info', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ url: url.trim() })
@@ -46,10 +47,22 @@ export const fetchMetadata = async (url: string): Promise<VideoMetadata> => {
  * Download audio from YouTube URL(s)
  */
 export const downloadMedia = async (items: DownloadItem[]): Promise<{ blob: Blob, filename: string }> => {
-  const response = await fetch('/api/download', {
+  // For single items, use legacy format if it's just one URL (compatibility with original code)
+  let requestBody;
+  let endpoint = '/download';
+  
+  if (items.length === 1 && items[0].format === 'wav') {
+    // Legacy format - just the URL directly
+    requestBody = { url: items[0].url };
+  } else {
+    // New format - array of items with formats
+    requestBody = { items };
+  }
+  
+  const response = await fetch(endpoint, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ items })
+    body: JSON.stringify(requestBody)
   });
 
   if (!response.ok) {
@@ -58,6 +71,7 @@ export const downloadMedia = async (items: DownloadItem[]): Promise<{ blob: Blob
   }
 
   // Extract filename from Content-Disposition header
+  // This matches the original code's approach
   const dispo = response.headers.get('Content-Disposition') || '';
   let filename;
   

@@ -10,11 +10,14 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
     proxy: {
-      // Proxy API requests to backend during development
-      '/api': {
+      // Proxy direct /download and /info requests to backend to match original frontend
+      '/download': {
         target: 'http://localhost:5000',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, '')
+      },
+      '/info': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
       }
     }
   },
