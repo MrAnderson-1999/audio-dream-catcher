@@ -5,23 +5,23 @@
 
 @layer base {
   :root {
-    --background: 260 20% 10%;
-    --foreground: 0 0% 98%;
+    --background: 220 40% 98%;
+    --foreground: 220 10% 25%;
 
-    --card: 260 20% 12%;
-    --card-foreground: 0 0% 98%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 10% 25%;
 
-    --popover: 260 20% 12%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 10% 25%;
 
     --primary: 252 87% 66%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 260 20% 18%;
-    --secondary-foreground: 0 0% 98%;
+    --secondary: 220 20% 96%;
+    --secondary-foreground: 220 10% 25%;
 
-    --muted: 260 20% 16%;
-    --muted-foreground: 0 0% 75%;
+    --muted: 220 20% 92%;
+    --muted-foreground: 220 10% 60%;
 
     --accent: 252 87% 66%;
     --accent-foreground: 0 0% 100%;
@@ -29,8 +29,8 @@
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 260 20% 20%;
-    --input: 260 20% 16%;
+    --border: 220 20% 90%;
+    --input: 220 20% 92%;
     --ring: 252 87% 66%;
 
     --radius: 0.75rem;
@@ -62,11 +62,13 @@
 
 @layer utilities {
   .bg-wave-pattern {
-    background-image: url('https://images.unsplash.com/photo-1482938289607-e9573fc25ebb');
+    background-image: url('https://images.unsplash.com/photo-1519681393784-d120267933ba');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     background-attachment: fixed;
+    width: 100vw;
+    min-height: 100vh;
   }
 }
 

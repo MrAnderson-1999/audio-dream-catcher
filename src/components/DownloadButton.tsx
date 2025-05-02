@@ -20,7 +20,7 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
     <Button
       onClick={onClick}
       disabled={disabled || isLoading}
-      className="w-full py-6 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-lg transition-colors"
+      className="w-full py-6 bg-purple-500 hover:bg-purple-600 text-white font-bold rounded-lg transition-colors"
     >
       {isLoading ? (
         <>

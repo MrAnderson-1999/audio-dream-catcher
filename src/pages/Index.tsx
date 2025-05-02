@@ -58,11 +58,11 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-wave-pattern pb-10">
-      <div className="container max-w-3xl px-4 sm:px-6 mx-auto">
+    <div className="bg-wave-pattern pb-10">
+      <div className="container max-w-3xl px-4 sm:px-6 mx-auto pt-6">
         <Header />
         
-        <Card className="border border-border backdrop-blur-sm bg-card/80 mb-6">
+        <Card className="border border-gray-200 shadow-md backdrop-blur-sm bg-white/90 mb-6">
           <CardContent className="pt-6">
             <UrlInput 
               url={url} 
@@ -73,7 +73,7 @@ const Index = () => {
           </CardContent>
         </Card>
 
-        <Card className="border border-border backdrop-blur-sm bg-card/80 mb-6">
+        <Card className="border border-gray-200 shadow-md backdrop-blur-sm bg-white/90 mb-6">
           <CardContent className="pt-6">
             <FormatSelector
               formats={['wav', 'mp3', 'flac']}
@@ -91,7 +91,7 @@ const Index = () => {
           </CardContent>
         </Card>
         
-        <div className="text-center text-xs text-white mt-8">
+        <div className="text-center text-xs text-gray-700 mt-8">
           <p>Audio Dream Catcher • Extract and download audio from YouTube</p>
           <p className="mt-1">
             Made with <span className="text-red-500">♥</span> for music lovers

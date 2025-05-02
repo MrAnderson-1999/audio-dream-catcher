@@ -23,7 +23,7 @@ const FormatSelector: React.FC<FormatSelectorProps> = ({
 
   return (
     <div className="mb-4">
-      <h3 className="mb-3 text-sm font-medium text-muted-foreground">Select Format</h3>
+      <h3 className="mb-3 text-sm font-medium text-gray-600">Select Format</h3>
       <RadioGroup
         value={selectedFormat}
         onValueChange={onChange}
@@ -42,8 +42,8 @@ const FormatSelector: React.FC<FormatSelectorProps> = ({
             <Label
               htmlFor={`format-${format}`}
               className={cn(
-                "flex flex-col items-center justify-between rounded-md border-2 border-muted bg-secondary p-4 hover:bg-muted hover:text-accent-foreground",
-                "peer-data-[state=checked]:border-purple-500 peer-data-[state=checked]:bg-secondary",
+                "flex flex-col items-center justify-between rounded-md border-2 border-gray-200 bg-white p-4 hover:bg-gray-50 hover:text-purple-600",
+                "peer-data-[state=checked]:border-purple-500 peer-data-[state=checked]:bg-purple-50",
                 "cursor-pointer transition-all w-full",
                 disabled && "opacity-50 cursor-not-allowed"
               )}

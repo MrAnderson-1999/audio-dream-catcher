@@ -28,7 +28,7 @@ const UrlInput: React.FC<UrlInputProps> = ({ url, setUrl, onFetch, isLoading }) 
           <Input
             type="text"
             placeholder="Enter YouTube URL"
-            className="pl-4 pr-10 py-6 w-full bg-secondary border-secondary text-white rounded-lg"
+            className="pl-4 pr-10 py-6 w-full bg-white border-gray-200 text-gray-800 rounded-lg shadow-sm"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
             onKeyDown={handleKeyDown}
@@ -38,13 +38,13 @@ const UrlInput: React.FC<UrlInputProps> = ({ url, setUrl, onFetch, isLoading }) 
         <Button 
           onClick={onFetch}
           disabled={isLoading || !url.trim()} 
-          className={`bg-purple-600 hover:bg-purple-700 text-white px-5 py-6 rounded-lg transition-colors ${isMobile ? 'w-full' : ''}`}
+          className={`bg-purple-500 hover:bg-purple-600 text-white px-5 py-6 rounded-lg transition-colors ${isMobile ? 'w-full' : ''}`}
         >
           <Download className="mr-2 h-4 w-4" />
           Download
         </Button>
       </div>
-      <p className="mt-2 text-xs text-muted-foreground">
+      <p className="mt-2 text-xs text-gray-500">
         Paste a YouTube video link to extract its audio
       </p>
     </div>
