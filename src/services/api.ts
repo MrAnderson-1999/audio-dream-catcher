@@ -29,19 +29,24 @@ interface VideoMetadata {
  */
 export const fetchMetadata = async (url: string): Promise<VideoMetadata> => {
   try {
-    // Make sure we're using the correct HTTP method (POST) and properly formatted JSON
-    const response = await fetch('/info', {
-      method: 'POST',
+    console.log("Sending fetch request to /api/info with URL:", url);
+    
+    // Use GET request with the URL as a query parameter
+    const encodedUrl = encodeURIComponent(url.trim());
+    const response = await fetch(`/api/info?url=${encodedUrl}`, {
+      method: 'GET',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ url: url.trim() })
     });
 
     if (!response.ok) {
       const errorText = await response.text();
+      console.error("API error response:", errorText);
       throw new Error(errorText || response.statusText);
     }
 
-    return await response.json();
+    const data = await response.json();
+    console.log("Received metadata response:", data);
+    return data;
   } catch (error) {
     console.error("API Error:", error);
     throw error;
@@ -53,15 +58,17 @@ export const fetchMetadata = async (url: string): Promise<VideoMetadata> => {
  */
 export const downloadMedia = async (items: DownloadItem[]): Promise<{ blob: Blob, filename: string }> => {
   try {
-    // For single items, use legacy format if it's just one URL (compatibility with original code)
-    let requestBody;
-    let endpoint = '/download';
+    console.log("Sending download request for items:", items);
     
-    if (items.length === 1 && items[0].format === 'wav') {
-      // Legacy format - just the URL directly
-      requestBody = { url: items[0].url };
+    // Prepare request body based on number of items
+    let requestBody;
+    let endpoint = '/api/download';
+    
+    if (items.length === 1) {
+      // For single items, use a simpler format
+      requestBody = { url: items[0].url, format: items[0].format };
     } else {
-      // New format - array of items with formats
+      // For multiple items, use the items array format
       requestBody = { items };
     }
     
@@ -73,6 +80,7 @@ export const downloadMedia = async (items: DownloadItem[]): Promise<{ blob: Blob
 
     if (!response.ok) {
       const errorText = await response.text();
+      console.error("Download API error response:", errorText);
       throw new Error(errorText || response.statusText);
     }
 

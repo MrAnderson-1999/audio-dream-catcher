@@ -10,14 +10,16 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
     proxy: {
-      // Ensure proxying uses the correct method
-      '/download': {
+      // Updated proxy configuration for API endpoints
+      '/api/download': {
         target: 'http://localhost:5000',
         changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ''),
       },
-      '/info': {
+      '/api/info': {
         target: 'http://localhost:5000',
         changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ''),
       }
     }
   },
