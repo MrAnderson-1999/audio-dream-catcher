@@ -10,7 +10,7 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
     proxy: {
-      // Proxy direct /download and /info requests to backend to match original frontend
+      // Ensure proxying uses the correct method
       '/download': {
         target: 'http://localhost:5000',
         changeOrigin: true,

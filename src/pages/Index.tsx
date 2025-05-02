@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { toast } from '@/components/ui/sonner';
 import Header from '@/components/Header';
@@ -32,13 +33,19 @@ const Index = () => {
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
 
   const fetchMetadata = async () => {
-    if (!url.trim()) return;
+    if (!url.trim()) {
+      toast.error("Please enter a valid YouTube URL");
+      return;
+    }
 
     setIsMetadataLoading(true);
     setMetadata(null);
     
     try {
+      console.log("Fetching metadata for URL:", url);
       const data = await api.fetchMetadata(url);
+      console.log("Received metadata:", data);
+      
       setMetadata(data);
 
       // For playlists, select all items by default
@@ -111,6 +118,8 @@ const Index = () => {
       } else {
         throw new Error('Invalid metadata');
       }
+      
+      console.log("Sending download request:", requestItems);
       
       // Send download request to API
       const { blob, filename } = await api.downloadMedia(requestItems);
