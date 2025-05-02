@@ -60,6 +60,16 @@
   }
 }
 
+@layer utilities {
+  .bg-wave-pattern {
+    background-image: url('https://images.unsplash.com/photo-1482938289607-e9573fc25ebb');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+  }
+}
+
 @layer components {
   .audio-wave {
     @apply relative flex items-center justify-center gap-0.5 h-6;
