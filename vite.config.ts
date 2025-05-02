@@ -10,15 +10,10 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
     proxy: {
-      // Proxy configuration for API endpoints
+      // Proxy configuration for download endpoint only
       '/download': {
         target: 'http://localhost:5000',
         changeOrigin: true,
-      },
-      '/api/info': {
-        target: 'http://localhost:5000',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ''),
       }
     }
   },

@@ -9,50 +9,6 @@ interface DownloadItem {
   format: string;
 }
 
-interface PlaylistEntry {
-  id: string;
-  title: string;
-  thumbnail: string;
-  formats: string[];
-}
-
-interface VideoMetadata {
-  type: 'video' | 'playlist';
-  title: string;
-  thumbnail: string;
-  formats: string[];
-  entries?: PlaylistEntry[];
-}
-
-/**
- * Fetch metadata for a YouTube URL (video or playlist)
- */
-export const fetchMetadata = async (url: string): Promise<VideoMetadata> => {
-  try {
-    console.log("Sending fetch request to /api/info with URL:", url);
-    
-    // Use GET request with the URL as a query parameter
-    const encodedUrl = encodeURIComponent(url.trim());
-    const response = await fetch(`/api/info?url=${encodedUrl}`, {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("API error response:", errorText);
-      throw new Error(errorText || response.statusText);
-    }
-
-    const data = await response.json();
-    console.log("Received metadata response:", data);
-    return data;
-  } catch (error) {
-    console.error("API Error:", error);
-    throw error;
-  }
-};
-
 /**
  * Download audio from YouTube URL(s)
  */
@@ -109,6 +65,5 @@ export const downloadMedia = async (items: DownloadItem[]): Promise<{ blob: Blob
 };
 
 export default {
-  fetchMetadata,
   downloadMedia
 };

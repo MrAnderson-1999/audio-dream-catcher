@@ -3,121 +3,31 @@ import React, { useState } from 'react';
 import { toast } from '@/components/ui/sonner';
 import Header from '@/components/Header';
 import UrlInput from '@/components/UrlInput';
-import MetadataPreview from '@/components/MetadataPreview';
 import FormatSelector from '@/components/FormatSelector';
 import DownloadButton from '@/components/DownloadButton';
 import { Card, CardContent } from "@/components/ui/card";
 import api from '@/services/api';
 
-interface PlaylistEntry {
-  id: string;
-  title: string;
-  thumbnail: string;
-  formats: string[];
-}
-
-interface VideoMetadata {
-  type: 'video' | 'playlist';
-  title: string;
-  thumbnail: string;
-  formats: string[];
-  entries?: PlaylistEntry[];
-}
-
 const Index = () => {
   const [url, setUrl] = useState('');
-  const [isMetadataLoading, setIsMetadataLoading] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
-  const [metadata, setMetadata] = useState<VideoMetadata | null>(null);
   const [selectedFormat, setSelectedFormat] = useState('wav');
-  const [selectedItems, setSelectedItems] = useState<string[]>([]);
 
-  const fetchMetadata = async () => {
+  const downloadMedia = async () => {
     if (!url.trim()) {
       toast.error("Please enter a valid YouTube URL");
       return;
     }
 
-    setIsMetadataLoading(true);
-    setMetadata(null);
-    
-    try {
-      console.log("Fetching metadata for URL:", url);
-      const data = await api.fetchMetadata(url);
-      console.log("Received metadata:", data);
-      
-      setMetadata(data);
-
-      // For playlists, select all items by default
-      if (data.type === 'playlist' && data.entries) {
-        setSelectedItems(data.entries.map((entry: PlaylistEntry) => entry.id));
-      }
-
-      // Select first available format or default to wav
-      if (data.formats && data.formats.length > 0) {
-        setSelectedFormat(data.formats[0]);
-      } else {
-        setSelectedFormat('wav');
-      }
-
-      toast.success("Media information loaded successfully");
-    } catch (err) {
-      console.error("Fetch error:", err);
-      toast.error(`Failed to fetch information: ${err instanceof Error ? err.message : 'Unknown error'}`);
-      setMetadata(null);
-    } finally {
-      setIsMetadataLoading(false);
-    }
-  };
-
-  const toggleItem = (id: string) => {
-    if (selectedItems.includes(id)) {
-      setSelectedItems(selectedItems.filter(item => item !== id));
-    } else {
-      setSelectedItems([...selectedItems, id]);
-    }
-  };
-
-  const selectAll = () => {
-    if (!metadata?.entries) return;
-    setSelectedItems(metadata.entries.map(entry => entry.id));
-  };
-
-  const deselectAll = () => {
-    setSelectedItems([]);
-  };
-
-  const downloadMedia = async () => {
-    if (!metadata) return;
-
     setIsDownloading(true);
     
     try {
-      // Build request body based on metadata type
-      let requestItems;
-      
-      if (metadata.type === 'video') {
-        requestItems = [{ 
-          id: url, 
-          url: url, 
-          format: selectedFormat 
-        }];
-      } else if (metadata.type === 'playlist' && metadata.entries) {
-        // Only include selected items
-        requestItems = metadata.entries
-          .filter(entry => selectedItems.includes(entry.id))
-          .map(entry => ({
-            id: entry.id,
-            url: `https://www.youtube.com/watch?v=${entry.id}`,
-            format: selectedFormat
-          }));
-
-        if (requestItems.length === 0) {
-          throw new Error('No items selected for download');
-        }
-      } else {
-        throw new Error('Invalid metadata');
-      }
+      // Build simple request item
+      const requestItems = [{ 
+        id: url, 
+        url: url, 
+        format: selectedFormat 
+      }];
       
       console.log("Sending download request:", requestItems);
       
@@ -157,62 +67,39 @@ const Index = () => {
             <UrlInput 
               url={url} 
               setUrl={setUrl} 
-              onFetch={fetchMetadata} 
-              isLoading={isMetadataLoading}
+              onFetch={downloadMedia} 
+              isLoading={isDownloading}
             />
-            
-            {isMetadataLoading && (
-              <div className="flex items-center justify-center py-8">
-                <div className="h-8 w-8 rounded-full border-4 border-t-transparent border-purple-600 animate-spin"></div>
-                <span className="ml-3">Loading media information...</span>
-              </div>
-            )}
           </CardContent>
         </Card>
 
-        {metadata && (
-          <>
-            <MetadataPreview 
-              metadata={metadata}
-              selectedItems={selectedItems}
-              toggleItem={toggleItem}
-              selectAll={selectAll}
-              deselectAll={deselectAll}
+        <Card className="border border-border backdrop-blur-sm bg-card/80 mb-6">
+          <CardContent className="pt-6">
+            <FormatSelector
+              formats={['wav', 'mp3', 'flac']}
+              selectedFormat={selectedFormat}
+              onChange={setSelectedFormat}
+              disabled={isDownloading}
             />
             
-            <Card className="border border-border backdrop-blur-sm bg-card/80 mb-6">
-              <CardContent className="pt-6">
-                <FormatSelector
-                  formats={metadata.formats || ['wav', 'mp3', 'flac']}
-                  selectedFormat={selectedFormat}
-                  onChange={setSelectedFormat}
-                  disabled={isDownloading}
-                />
-                
-                <DownloadButton
-                  onClick={downloadMedia}
-                  isLoading={isDownloading}
-                  disabled={
-                    (metadata.type === 'playlist' && selectedItems.length === 0) ||
-                    !metadata
-                  }
-                  isPlaylist={metadata.type === 'playlist'}
-                />
-              </CardContent>
-            </Card>
-            
-            <div className="text-center text-xs text-white mt-8">
-              <p>Audio Dream Catcher • Extract and download audio from YouTube</p>
-              <p className="mt-1">
-                Made with <span className="text-red-500">♥</span> for music lovers
-              </p>
-            </div>
-          </>
-        )}
+            <DownloadButton
+              onClick={downloadMedia}
+              isLoading={isDownloading}
+              disabled={!url.trim()}
+              isPlaylist={false}
+            />
+          </CardContent>
+        </Card>
+        
+        <div className="text-center text-xs text-white mt-8">
+          <p>Audio Dream Catcher • Extract and download audio from YouTube</p>
+          <p className="mt-1">
+            Made with <span className="text-red-500">♥</span> for music lovers
+          </p>
+        </div>
       </div>
     </div>
   );
 };
 
 export default Index;
-

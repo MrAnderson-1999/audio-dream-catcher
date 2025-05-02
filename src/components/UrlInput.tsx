@@ -2,7 +2,7 @@
 import React from 'react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search } from "lucide-react";
+import { Download } from "lucide-react";
 
 interface UrlInputProps {
   url: string;
@@ -24,7 +24,7 @@ const UrlInput: React.FC<UrlInputProps> = ({ url, setUrl, onFetch, isLoading }) 
         <div className="relative flex-1">
           <Input
             type="text"
-            placeholder="Enter YouTube URL or playlist link"
+            placeholder="Enter YouTube URL"
             className="pl-4 pr-10 py-6 w-full bg-secondary border-secondary text-white rounded-lg"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
@@ -37,12 +37,12 @@ const UrlInput: React.FC<UrlInputProps> = ({ url, setUrl, onFetch, isLoading }) 
           disabled={isLoading || !url.trim()} 
           className="bg-purple-600 hover:bg-purple-700 text-white px-5 py-6 rounded-lg transition-colors"
         >
-          <Search className="mr-2 h-4 w-4" />
-          Fetch
+          <Download className="mr-2 h-4 w-4" />
+          Download
         </Button>
       </div>
       <p className="mt-2 text-xs text-muted-foreground">
-        Paste a YouTube video or playlist link to get started
+        Paste a YouTube video link to extract its audio
       </p>
     </div>
   );
